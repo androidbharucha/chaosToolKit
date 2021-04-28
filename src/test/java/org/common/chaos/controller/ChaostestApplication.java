@@ -1,4 +1,4 @@
-package org.tiaa.chaos.chaostest;
+package org.common.chaos.controller;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

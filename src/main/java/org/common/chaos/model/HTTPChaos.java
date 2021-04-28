@@ -51,6 +51,20 @@ public class HTTPChaos {
 		return "HTTPChaos [experimentID=" + experimentID + ", httpStatus=" + httpStatus + ", errorResponseMessage="
 				+ errorResponseMessage + ", chaosEndpoints=" + chaosEndpoints + "]";
 	}
+
+	public HTTPChaos(String experimentID, HttpStatus httpStatus, String errorResponseMessage,
+			List<String> chaosEndpoints) {
+		super();
+		this.experimentID = experimentID;
+		this.httpStatus = httpStatus;
+		this.errorResponseMessage = errorResponseMessage;
+		this.chaosEndpoints = chaosEndpoints;
+	}
+
+	public HTTPChaos() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 	
 	
 

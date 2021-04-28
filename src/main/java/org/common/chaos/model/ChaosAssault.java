@@ -25,10 +25,6 @@ public class ChaosAssault {
 		return assaultParameters;
 	}
 	
-	public ChaosAssault() {
-		super();
-	}
-
 	public ChaosAssault(String experimentId, ChaosAssaultType assaultType, Map<ChaosParameterKeysConstant, Object> assaultParameters) {
 		super();
 		this.experimentId = experimentId;
@@ -42,18 +38,6 @@ public class ChaosAssault {
 				+ assaultParameters + "]";
 	}
 
-	public void setExperimentId(String experimentId) {
-		this.experimentId = experimentId;
-	}
 
-	public void setAssaultType(ChaosAssaultType assaultType) {
-		this.assaultType = assaultType;
-	}
-
-	public void setAssaultParameters(Map<ChaosParameterKeysConstant, Object> assaultParameters) {
-		this.assaultParameters = assaultParameters;
-	}
-	
-	
 	
 }

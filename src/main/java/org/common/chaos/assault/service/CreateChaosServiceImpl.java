@@ -1,15 +1,13 @@
 package org.common.chaos.assault.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.common.chaos.annotation.service.IReadChaosPointService;
-import org.common.chaos.annotation.service.ReadChaosPointService;
 import org.common.chaos.datastore.ActiveChaosDataStore;
 import org.common.chaos.datastore.StaticChaosDataStore;
 import org.common.chaos.enums.ChaosAssaultType;
@@ -17,7 +15,6 @@ import org.common.chaos.enums.ChaosParameterKeysConstant;
 import org.common.chaos.model.ChaosAssault;
 import org.common.chaos.model.HTTPChaos;
 import org.common.chaos.model.MutantTest;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,7 +26,7 @@ public class CreateChaosServiceImpl implements ICreateChaosService {
 	@Override
 	public void createHTTPChaos(HTTPChaos httpChaos) {
 
-		Map<ChaosParameterKeysConstant, Object> assaultParameters = new HashMap();
+		Map<ChaosParameterKeysConstant, Object> assaultParameters = new HashMap<>();
 		assaultParameters.put(ChaosParameterKeysConstant.CHAOS_THROWBLE_EXCEPTION,
 				new ResponseStatusException(httpChaos.getHttpStatus(), httpChaos.getErrorResponseMessage()));
 		ChaosAssault httpChaosAssault = new ChaosAssault(httpChaos.getExperimentID(), ChaosAssaultType.HTTP_ASSAULT,
@@ -41,16 +38,16 @@ public class CreateChaosServiceImpl implements ICreateChaosService {
 				ActiveChaosDataStore.addActiveChaos(chaosEndpoint, httpChaosAssault);
 		});
 
-		clearChaosAsynchroneously(httpChaos);
+		clearChaosAsynchroneously(httpChaos.getExperimentID() , httpChaos.getChaosEndpoints(),ChaosAssaultType.HTTP_ASSAULT.name());
 
 	}
 
-	public void clearChaosAsynchroneously(HTTPChaos httpChaos) {
+	public void clearChaosAsynchroneously(String experimentId, List<String> endPoints, String chaosAssaultType) {
 		scheduler.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				httpChaos.getChaosEndpoints().forEach((endpoint) -> {
-					clearChaos(httpChaos.getExperimentID(), endpoint, ChaosAssaultType.HTTP_ASSAULT.name());
+				endPoints.forEach((endpoint) -> {
+					clearChaos(experimentId, endpoint, chaosAssaultType);
 				});
 
 			}
@@ -60,7 +57,7 @@ public class CreateChaosServiceImpl implements ICreateChaosService {
 	@Override
 	public void createMutantChaos(MutantTest mutantTest) {
 
-		Map<ChaosParameterKeysConstant, Object> assaultParameters = new HashMap();
+		Map<ChaosParameterKeysConstant, Object> assaultParameters = new HashMap<>();
 		assaultParameters.put(ChaosParameterKeysConstant.CHAOS_THROWBLE_EXCEPTION,
 				mutantTest.getChaosEndpoints2Mutants());
 		ChaosAssault mutantTestAssault = new ChaosAssault(mutantTest.getExperimentID(),
@@ -71,15 +68,9 @@ public class CreateChaosServiceImpl implements ICreateChaosService {
 				ActiveChaosDataStore.addActiveChaos(endPoint, mutantTestAssault);
 		});
 
-		scheduler.scheduleAtFixedRate(new Runnable() {
-			@Override
-			public void run() {
-				mutantTest.getChaosEndpoints2Mutants().keySet().forEach((endpoint) -> {
-					clearChaos(mutantTest.getExperimentID(), endpoint, ChaosAssaultType.MUTANT_TEST_ASSAULT.name());
-				});
 
-			}
-		}, new Long(120), TimeUnit.DAYS.toSeconds(1), TimeUnit.SECONDS);
+		clearChaosAsynchroneously(mutantTest.getExperimentID(), new ArrayList<String>(mutantTest.getChaosEndpoints2Mutants().keySet()),ChaosAssaultType.MUTANT_TEST_ASSAULT.name());
+		
 
 	}
 

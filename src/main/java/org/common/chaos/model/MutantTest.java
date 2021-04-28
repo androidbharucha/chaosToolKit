@@ -16,11 +16,6 @@ public class MutantTest {
 		super();
 	}
 
-	public MutantTest(String experimentID, Map<String, List<String>> chaosEndpoints) {
-		super();
-		this.experimentID = experimentID;
-		this.chaosEndpoints2Mutants = chaosEndpoints2Mutants;
-	}
 
 	
 	public MutantTest(String experimentID, Map<String, List<String>> chaosEndpoints2Mutants, String endpointname,

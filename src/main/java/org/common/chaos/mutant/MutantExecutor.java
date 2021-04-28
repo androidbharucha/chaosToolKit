@@ -36,23 +36,19 @@ public class MutantExecutor {
 		}
 
 		try {
-
-			;
 			List<MutantTO> mutantsOnMethod = StaticChaosDataStore.mutantsByEndpoint
 					.get(StaticChaosDataStore.methodSignature2endpointName.get(method.toString()));
-			
-			Map<String,Object> methodComponents = parstMethodSignature(chooseRandomMutantForExecution(mutantsOnMethod));
-			
+
+			Map<String, Object> methodComponents = parstMethodSignature(
+					chooseRandomMutantForExecution(mutantsOnMethod));
+
 			Class mutantClass = (Class) methodComponents.get("CLASS_TYPE");
 			String methodName = (String) methodComponents.get("METHOD_NAME");
-			
-			
-			
-			Method mutant = mutantClass.getMethod(methodName,
-					parametersList.toArray(new Class[parametersList.size()]));
+
+			Method mutant = mutantClass.getMethod(methodName, parametersList.toArray(new Class[parametersList.size()]));
 			returnValue = mutant.invoke(jp.getTarget(), parameters);
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException  | ClassNotFoundException e) {
+				| SecurityException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -69,11 +65,12 @@ public class MutantExecutor {
 		return mutantsOnMethod.get(new Random().nextInt(mutantsOnMethod.size())).getMethodSignature();
 	}
 
-	public static Map<String,Object> parstMethodSignature(String methodSignature) throws ClassNotFoundException {
-		//String methodSignature = "public java.lang.String org.common.chaos.controller.ChaosEndpoint.smokeTestForChaosMutant1(java.lang.Object)";
+	public static Map<String, Object> parstMethodSignature(String methodSignature) throws ClassNotFoundException {
+		// String methodSignature = "public java.lang.String
+		// org.common.chaos.controller.ChaosEndpoint.smokeTestForChaosMutant1(java.lang.Object)";
 
-		Map<String,Object> methodComponents = new HashMap();
-		
+		Map<String, Object> methodComponents = new HashMap();
+
 		List<String> methodSignatureComponents = Arrays.asList(methodSignature.split(" "));
 
 		String accessModifier = Arrays.asList("public", "private", "protected", "default")
@@ -91,7 +88,7 @@ public class MutantExecutor {
 
 		String methodName = fullyQualifiedMethodNameSplit[(fullyQualifiedMethodNameSplit.length - 1)];
 
-		String fullyQualifiedClassNAme = fullyQualifiedMethodName.replaceAll("\\." + methodName, "") ;
+		String fullyQualifiedClassNAme = fullyQualifiedMethodName.replaceAll("\\." + methodName, "");
 
 		System.out.println("access modifier :" + accessModifier);
 		System.out.println("return type :" + returnType);
@@ -100,10 +97,9 @@ public class MutantExecutor {
 		System.out.println("plain method name :" + methodName);
 		System.out.println("fully Qualified Class name :" + fullyQualifiedClassNAme);
 
-		
 		methodComponents.put("METHOD_NAME", methodName);
 		methodComponents.put("CLASS_TYPE", Class.forName(fullyQualifiedClassNAme));
-		
+
 		return methodComponents;
 	}
 

@@ -41,7 +41,7 @@ public class StaticChaosDataStore {
 				new ConfigurationBuilder().setUrls(ClasspathHelper.forPackage(PACKAGE_NAME_TO_BE_SCANNED))
 						.setScanners(new MethodAnnotationsScanner()));
 		reflections.getMethodsAnnotatedWith(EnableChaos.class).forEach(method -> {
-
+			
 			EnableChaos enabledChaos = method.getAnnotation(EnableChaos.class);
 			enabledChaosByEndpoint.put(enabledChaos.chaosEndpointname(),
 					Arrays.asList(enabledChaos.supportedChaosTypes()));
